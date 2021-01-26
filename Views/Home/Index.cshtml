@@ -1,0 +1,80 @@
+﻿@{ ViewData["Title"] = "Расчёт";
+    var inputFormus = ViewData["input"] as Formulas; }
+
+<div class="text-center">
+    <h1 class="display-4">Расчёт конвективного теплообмена при поперечном обтекании пучка труб</h1>
+</div>
+<hr>
+<div class="text-center">
+    <h3>Исходные данные</h3>
+    <form action="/Home/Index" method="post">
+        <div class="text-center row d-flex align-items-end pt-1 pb-5">
+            <div class="col-4">
+                <label for="W" class="text-truncate">Средняя действительная скорость потока W, м/с</label>
+                <input type="text" id="W" class="form-control" name="W" value="@(inputFormus.W.ZeroDigitToEmty())" placeholder="0" required />
+            </div>
+            <div class="col-4">
+                <label for="tB">Температура потока tB, °С</label>
+                <input type="text" id="tB" class="form-control" name="tB" value="@(inputFormus.tB.ZeroDigitToEmty())" placeholder="0" required />
+            </div>
+            <div class="col-4">
+                <label for="d">Диаметр трубы d, м</label>
+                <input type="text" id="d" class="form-control" name="d" value="@(inputFormus.d.ZeroDigitToEmty())" placeholder="0" required />
+            </div>
+        </div>
+        <button class="btn btn-outline-success" id="#Egorushka" type="submit">Посчитать</button>
+    </form>
+</div>
+
+@if (ViewBag.Formulas != null)
+{<div>
+    <canvas id="myChart" max-width="150" max-height="150"></canvas>
+    <h5>Число Re для потока: @(inputFormus.Re())</h5>
+    <h5>Nu для коридорного пучка труб: @(inputFormus.NuKor)</h5>
+    <h5>Отсюда коэффициент теплоотдачи конвекцией третьего и последующих рядов труб составит: @(inputFormus.a3r(inputFormus.NuKor)) Вт/(м2*К)</h5>
+    <h4 class="text-center font-weight-bold">Средний коэффициент теплоотдачи для всего пучка в целом </h4>
+    <h5>Nu для шахматного пучка труб: @(inputFormus.NuShakh)</h5>
+    <h5>Коэффициент теплоотдачи третьего и последующих рядов труб составит: @(inputFormus.a3r(inputFormus.NuShakh)) Вт/(м2*К)</h5>
+</div>
+}
+
+<script>
+    var Graphik = @Html.Raw(ViewBag.TheDiagramm);
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Число Re для потока', 'Nu для коридорного пучка труб', 'Nu для шахматного пучка труб', 'Коэффициент теплоотдачи конвекцией третьего и последующих рядов труб', 'Коэффициент теплоотдачи третьего и последующих рядов труб'],
+        datasets: [{
+            label: 'Диаграмма',
+            data: Graphik,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
