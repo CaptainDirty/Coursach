@@ -25,7 +25,7 @@ namespace Coursach.Controllers
             ViewData["input"] = input;
             ViewBag.Formulas = input;
 
-            var Diagramm = new List<double>() { input.Re(), input.NuKor, input.NuShakh, input.a3r(input.NuKor), input.a3r(input.NuShakh) };//Выводим график
+            var Diagramm = new List<double>() { input.NuKor, input.NuShakh, input.a3r(input.NuKor), input.a3r(input.NuShakh) };//Выводим график
             ViewBag.TheDiagramm = Newtonsoft.Json.JsonConvert.SerializeObject(Diagramm);
 
             return View();
